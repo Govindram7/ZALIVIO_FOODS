@@ -1,0 +1,722 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f6f4ed;
+    color: #173f32;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.tracking-header {
+    background: #173f32;
+    color: #ffffff;
+}
+
+.header-inner {
+    width: min(1100px, 92%);
+    min-height: 74px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1.3px;
+}
+
+.store-link {
+    padding: 9px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.store-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tracking-page {
+    width: min(900px, 92%);
+    margin: auto;
+    padding: 55px 0 80px;
+}
+
+.tracking-search {
+    max-width: 680px;
+    margin: 0 auto 35px;
+    text-align: center;
+}
+
+.eyebrow {
+    color: #9b7c2f;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.tracking-search h1 {
+    margin: 7px 0 10px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 42px;
+}
+
+.tracking-intro {
+    max-width: 520px;
+    margin: auto;
+    color: #6e7b75;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.tracking-form {
+    margin-top: 30px;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #e4dfd4;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(23, 63, 50, 0.05);
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d7d8d2;
+    border-radius: 7px;
+    outline: none;
+    background: #ffffff;
+    color: #173f32;
+}
+
+.form-group input:focus {
+    border-color: #173f32;
+    box-shadow: 0 0 0 3px rgba(23, 63, 50, 0.08);
+}
+
+.track-button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 7px;
+    background: #173f32;
+    color: #ffffff;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.track-button:hover {
+    background: #102f26;
+}
+
+.privacy-note {
+    margin-top: 12px;
+    color: #7b8781;
+    font-size: 11px;
+}
+
+.tracking-message {
+    margin-top: 18px;
+    padding: 13px 15px;
+    border-radius: 7px;
+    font-size: 13px;
+}
+
+.tracking-message.error {
+    background: #fff0f0;
+    border: 1px solid #e9bcbc;
+    color: #922d2d;
+}
+
+.tracking-message.success {
+    background: #edf7f0;
+    border: 1px solid #b9dcc4;
+    color: #245d38;
+}
+
+.tracking-result {
+    background: #ffffff;
+    border: 1px solid #e4dfd4;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 35px rgba(23, 63, 50, 0.06);
+}
+
+.result-header {
+    padding: 25px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid #ece8df;
+}
+
+.result-header div > span {
+    display: block;
+    margin-bottom: 5px;
+    color: #89938e;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.result-header h2 {
+    font-size: 19px;
+    overflow-wrap: anywhere;
+}
+
+.status-badge {
+    padding: 8px 13px;
+    border-radius: 20px;
+    background: #eeeae1;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.status-pending {
+    background: #eeeae1;
+}
+
+.status-confirmed {
+    background: #e5efff;
+}
+
+.status-shipped {
+    background: #fff3cf;
+}
+
+.status-delivered {
+    background: #e3f5e9;
+}
+
+.status-cancelled {
+    background: #ffe8e8;
+    color: #9b2929;
+}
+
+/* STEP 6H-3 - CUSTOMER-FRIENDLY ORDER STATUS MESSAGE */
+
+.order-status-message {
+    margin: 24px 28px 0;
+    padding: 16px 18px;
+    border: 1px solid #e1ddd4;
+    border-radius: 9px;
+    background: #f8f6ef;
+}
+
+.order-status-message strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #173f32;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+}
+
+.order-status-message p {
+    margin: 0;
+    color: #68766f;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.status-message-pending {
+    background: #f8f6ef;
+}
+
+.status-message-confirmed {
+    background: #f4f8ff;
+    border-color: #d9e5f7;
+}
+
+.status-message-shipped {
+    background: #fffaf0;
+    border-color: #eee0ba;
+}
+
+.status-message-delivered {
+    background: #f1f8f3;
+    border-color: #cfe5d5;
+}
+
+.status-message-cancelled {
+    background: #fff5f5;
+    border-color: #ebcccc;
+}
+
+.status-message-cancelled strong,
+.status-message-cancelled p {
+    color: #922d2d;
+}
+
+.status-tracker {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 35px 30px;
+    background: #faf9f5;
+}
+
+.tracking-step {
+    position: relative;
+    text-align: center;
+    color: #9aa29e;
+}
+
+.tracking-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 17px;
+    left: 60%;
+    width: 80%;
+    height: 2px;
+    background: #dddcd6;
+}
+
+.step-circle {
+    position: relative;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    margin: 0 auto 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #d5d7d2;
+    border-radius: 50%;
+    background: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.tracking-step.completed {
+    color: #173f32;
+}
+
+.tracking-step.completed .step-circle {
+    background: #173f32;
+    border-color: #173f32;
+    color: #ffffff;
+}
+
+.tracking-step.completed:not(:last-child)::after {
+    background: #173f32;
+}
+
+.tracking-step > span {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.order-information {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 28px;
+}
+
+.information-card {
+    padding: 20px;
+    background: #f8f6ef;
+    border-radius: 10px;
+}
+
+.information-card h3 {
+    margin-bottom: 16px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.detail-row span {
+    color: #78847e;
+}
+
+.detail-row strong {
+    text-align: right;
+}
+
+.information-card p {
+    margin-bottom: 6px;
+    color: #68766f;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.information-card .customer-name {
+    color: #173f32;
+    font-weight: 800;
+}
+
+.products-section {
+    padding: 0 28px 28px;
+}
+
+.products-section h3 {
+    margin-bottom: 12px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+}
+
+.tracking-product {
+    display: grid;
+    grid-template-columns: 65px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #ece8df;
+}
+
+.tracking-product img,
+.product-image-placeholder {
+    width: 65px;
+    height: 65px;
+    border-radius: 8px;
+}
+
+.tracking-product img {
+    object-fit: cover;
+}
+
+.product-image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ece8df;
+    color: #173f32;
+    font-weight: 800;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.product-details strong {
+    font-size: 13px;
+}
+
+.product-details span {
+    color: #78847e;
+    font-size: 11px;
+}
+
+.product-total {
+    font-size: 13px;
+}
+
+.tracking-totals {
+    margin: 0 28px;
+    padding: 20px 0;
+    border-top: 1px solid #e8e4dc;
+}
+
+.tracking-totals > div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #6c7973;
+    font-size: 12px;
+}
+
+.tracking-totals .grand-total {
+    margin-top: 15px;
+    margin-bottom: 0;
+    padding-top: 15px;
+    border-top: 1px solid #e1ddd4;
+    color: #173f32;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+/* STEP 6G - CUSTOMER CANCELLATION */
+
+.customer-cancel-section {
+    margin: 0 28px 25px;
+    padding: 20px;
+    border: 1px solid #ead9d9;
+    border-radius: 10px;
+    background: #fffafa;
+}
+
+.customer-cancel-section h3 {
+    margin-bottom: 7px;
+    color: #7e2929;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+}
+
+.customer-cancel-section p {
+    margin-bottom: 14px;
+    color: #786b6b;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.cancel-order-form {
+    margin: 0;
+}
+
+.cancel-order-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 11px 18px;
+    border: 1px solid #a43a3a;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #9b2929;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.cancel-order-button:hover {
+    background: #9b2929;
+    color: #ffffff;
+}
+
+.cancel-order-button:focus-visible {
+    outline: 3px solid rgba(155, 41, 41, 0.2);
+    outline-offset: 2px;
+}
+
+.cancellation-locked {
+    margin: 0 28px 25px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: #f8f6ef;
+    color: #6c7973;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* STEP 6H-4 - STATUS-SPECIFIC CUSTOMER HELP */
+
+.customer-help-section {
+    margin: 0 28px 25px;
+    padding: 18px 20px;
+    border: 1px solid #e1ddd4;
+    border-radius: 10px;
+    background: #f8f6ef;
+}
+
+.customer-help-section h3 {
+    margin-bottom: 7px;
+    color: #173f32;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+}
+
+.customer-help-section p {
+    margin: 0;
+    color: #68766f;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.confirmed-help {
+    background: #f4f8ff;
+    border-color: #d9e5f7;
+}
+
+.shipped-help {
+    background: #fffaf0;
+    border-color: #eee0ba;
+}
+
+.delivered-help {
+    background: #f1f8f3;
+    border-color: #cfe5d5;
+}
+
+/* STEP 6H-2 - TRACK ANOTHER ORDER */
+
+.tracking-actions {
+    padding: 5px 28px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.track-another-button,
+.shop-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 170px;
+    padding: 13px 25px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.track-another-button {
+    background: #ffffff;
+    color: #173f32;
+    border: 1px solid #173f32;
+}
+
+.track-another-button:hover {
+    background: #f4f1e7;
+}
+
+.shop-button {
+    background: #173f32;
+    color: #ffffff;
+    border: 1px solid #173f32;
+}
+
+.shop-button:hover {
+    background: #102f26;
+}
+
+.tracking-footer {
+    padding: 25px;
+    background: #173f32;
+    color: rgba(255, 255, 255, 0.75);
+    text-align: center;
+    font-size: 11px;
+}
+
+@media (max-width: 650px) {
+    .header-inner {
+        min-height: 66px;
+    }
+
+    .logo {
+        font-size: 16px;
+    }
+
+    .store-link {
+        padding: 8px 10px;
+        font-size: 10px;
+    }
+
+    .tracking-page {
+        padding: 38px 0 55px;
+    }
+
+    .tracking-search h1 {
+        font-size: 34px;
+    }
+
+    .tracking-form {
+        padding: 20px;
+    }
+
+    .order-information {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+
+    .status-tracker {
+        padding: 28px 10px;
+    }
+
+    .tracking-step > span {
+        font-size: 9px;
+    }
+
+    .step-circle {
+        width: 30px;
+        height: 30px;
+    }
+
+    .tracking-step:not(:last-child)::after {
+        top: 14px;
+    }
+
+    .result-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .products-section {
+        padding: 0 20px 20px;
+    }
+
+    .tracking-product {
+        grid-template-columns: 55px 1fr;
+    }
+
+    .tracking-product img,
+    .product-image-placeholder {
+        width: 55px;
+        height: 55px;
+    }
+
+    .product-total {
+        grid-column: 2;
+    }
+
+    .tracking-totals {
+        margin: 0 20px;
+    }
+
+    .customer-cancel-section,
+    .cancellation-locked,
+    .customer-help-section {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .cancel-order-button {
+        width: 100%;
+    }
+
+    .order-status-message {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .tracking-actions {
+        padding: 5px 20px 25px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .track-another-button,
+    .shop-button {
+        width: 100%;
+        min-width: 0;
+    }
+}

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Orders | Zalivio Admin</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/admin.css') }}?v=5"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ==================================================
+         HEADER
+    =================================================== -->
+
+    <header class="admin-header">
+
+        <div class="admin-header-inner">
+
+            <div class="admin-brand-area">
+
+                <a
+                    href="{{ url_for('admin_orders') }}"
+                    class="admin-logo"
+                >
+                    ZALIVIO FOODS
+                </a>
+
+                <span class="admin-header-label">
+                    ADMIN
+                </span>
+
+            </div>
+
+
+            <div class="admin-header-actions">
+
+    <a href="{{ url_for('admin_orders') }}">
+        Orders
+    </a>
+
+    <a href="{{ url_for('admin_products') }}">
+        Products
+    </a>
+
+    <a
+        href="{{ url_for('home') }}"
+        target="_blank"
+    >
+        View Store
+    </a>
+
+    <a
+        href="{{ url_for('track_order') }}"
+        target="_blank"
+    >
+        Track Order
+    </a>
+
+    <a
+        href="{{ url_for('admin_logout') }}"
+        class="logout-button"
+    >
+        Logout
+    </a>
+
+</div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==================================================
+         MAIN
+    =================================================== -->
+
+    <main class="admin-container">
+
+
+        <!-- ==================================================
+             PAGE HEADING
+        =================================================== -->
+
+        <section class="dashboard-heading">
+
+            <div>
+
+                <span class="dashboard-eyebrow">
+                    ORDER MANAGEMENT
+                </span>
+
+                <h1>
+                    Customer Orders
+                </h1>
+
+                <p>
+                    Search, filter, review and update customer orders.
+                </p>
+
+            </div>
+
+
+            <div class="order-count">
+
+                <strong>
+                    {{ total_orders }}
+                </strong>
+
+                <span>
+                    Total Orders
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             STATUS STATISTICS
+        =================================================== -->
+
+        <section class="status-statistics">
+
+
+            <a
+                href="{{ url_for('admin_orders') }}"
+                class="stat-card
+                {% if status_filter == 'All' %}
+                    active
+                {% endif %}"
+            >
+
+                <span>
+                    All Orders
+                </span>
+
+                <strong>
+                    {{ total_orders }}
+                </strong>
+
+            </a>
+
+
+            <a
+                href="{{ url_for(
+                    'admin_orders',
+                    status='Pending'
+                ) }}"
+                class="stat-card
+                {% if status_filter == 'Pending' %}
+                    active
+                {% endif %}"
+            >
+
+                <span>
+                    Pending
+                </span>
+
+                <strong>
+                    {{ pending_count }}
+                </strong>
+
+            </a>
+
+
+            <a
+                href="{{ url_for(
+                    'admin_orders',
+                    status='Confirmed'
+                ) }}"
+                class="stat-card
+                {% if status_filter == 'Confirmed' %}
+                    active
+                {% endif %}"
+            >
+
+                <span>
+                    Confirmed
+                </span>
+
+                <strong>
+                    {{ confirmed_count }}
+                </strong>
+
+            </a>
+
+
+            <a
+                href="{{ url_for(
+                    'admin_orders',
+                    status='Shipped'
+                ) }}"
+                class="stat-card
+                {% if status_filter == 'Shipped' %}
+                    active
+                {% endif %}"
+            >
+
+                <span>
+                    Shipped
+                </span>
+
+                <strong>
+                    {{ shipped_count }}
+                </strong>
+
+            </a>
+
+
+            <a
+                href="{{ url_for(
+                    'admin_orders',
+                    status='Delivered'
+                ) }}"
+                class="stat-card
+                {% if status_filter == 'Delivered' %}
+                    active
+                {% endif %}"
+            >
+
+                <span>
+                    Delivered
+                </span>
+
+                <strong>
+                    {{ delivered_count }}
+                </strong>
+
+            </a>
+
+
+            <a
+                href="{{ url_for(
+                    'admin_orders',
+                    status='Cancelled'
+                ) }}"
+                class="stat-card
+                {% if status_filter == 'Cancelled' %}
+                    active
+                {% endif %}"
+            >
+
+                <span>
+                    Cancelled
+                </span>
+
+                <strong>
+                    {{ cancelled_count }}
+                </strong>
+
+            </a>
+
+        </section>
+
+
+        <!-- ==================================================
+             SEARCH AND FILTER
+        =================================================== -->
+
+        <section class="filter-panel">
+
+            <form
+                method="GET"
+                action="{{ url_for('admin_orders') }}"
+                class="filter-form"
+            >
+
+
+                <div class="search-field">
+
+                    <label for="q">
+                        Search Orders
+                    </label>
+
+                    <input
+                        type="search"
+                        id="q"
+                        name="q"
+                        value="{{ search_query }}"
+                        placeholder="Order number, customer, phone or email"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="status-filter-field">
+
+                    <label for="status">
+                        Order Status
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                    >
+
+                        <option
+                            value="All"
+                            {% if status_filter == "All" %}
+                                selected
+                            {% endif %}
+                        >
+                            All Statuses
+                        </option>
+
+
+                        <option
+                            value="Pending"
+                            {% if status_filter == "Pending" %}
+                                selected
+                            {% endif %}
+                        >
+                            Pending
+                        </option>
+
+
+                        <option
+                            value="Confirmed"
+                            {% if status_filter == "Confirmed" %}
+                                selected
+                            {% endif %}
+                        >
+                            Confirmed
+                        </option>
+
+
+                        <option
+                            value="Shipped"
+                            {% if status_filter == "Shipped" %}
+                                selected
+                            {% endif %}
+                        >
+                            Shipped
+                        </option>
+
+
+                        <option
+                            value="Delivered"
+                            {% if status_filter == "Delivered" %}
+                                selected
+                            {% endif %}
+                        >
+                            Delivered
+                        </option>
+
+
+                        <option
+                            value="Cancelled"
+                            {% if status_filter == "Cancelled" %}
+                                selected
+                            {% endif %}
+                        >
+                            Cancelled
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-buttons">
+
+                    <button
+                        type="submit"
+                        class="filter-button"
+                    >
+                        Search
+                    </button>
+
+
+                    <a
+                        href="{{ url_for('admin_orders') }}"
+                        class="clear-filter-button"
+                    >
+                        Clear Filters
+                    </a>
+
+                </div>
+
+            </form>
+
+
+            <div class="filter-results">
+
+                <span>
+
+                    Showing
+
+                    <strong>
+                        {{ order_rows | length }}
+                    </strong>
+
+                    {% if order_rows | length == 1 %}
+
+                        order
+
+                    {% else %}
+
+                        orders
+
+                    {% endif %}
+
+                </span>
+
+
+                {% if search_query %}
+
+                    <span class="active-filter">
+
+                        Search:
+                        <strong>
+                            "{{ search_query }}"
+                        </strong>
+
+                    </span>
+
+                {% endif %}
+
+
+                {% if status_filter != "All" %}
+
+                    <span class="active-filter">
+
+                        Status:
+                        <strong>
+                            {{ status_filter }}
+                        </strong>
+
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             FLASH MESSAGES
+        =================================================== -->
+
+        {% with messages =
+            get_flashed_messages(
+                with_categories=true
+            )
+        %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div
+                        class="admin-message {{ category }}"
+                    >
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- ==================================================
+             ORDERS
+        =================================================== -->
+
+        {% if order_rows %}
+
+            <section class="orders-list">
+
+
+                {% for row in order_rows %}
+
+
+                    {% set order = row["order"] %}
+
+
+                    <article class="order-card">
+
+
+                        <!-- ==================================
+                             ORDER HEADER
+                        =================================== -->
+
+                        <div class="order-card-header">
+
+                            <div>
+
+                                <span class="small-label">
+                                    ORDER
+                                </span>
+
+                                <h2>
+                                    {{ order.order_number }}
+                                </h2>
+
+                            </div>
+
+
+                            <div class="order-card-header-actions">
+
+                                <span
+                                    class="status-badge
+                                    status-{{ order.status | lower }}"
+                                >
+                                    {{ order.status }}
+                                </span>
+
+                                <a
+                                    href="{{ url_for(
+                                        'admin_order_details',
+                                        order_id=order.id
+                                    ) }}"
+                                    class="view-order-details-button"
+                                >
+                                    View Details
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================
+                             ORDER META
+                        =================================== -->
+
+                        <div class="order-meta">
+
+
+                            <div>
+
+                                <span>
+                                    Customer
+                                </span>
+
+                                <strong>
+                                    {{ order.customer_name }}
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Phone
+                                </span>
+
+                                <strong>
+                                    {{ order.phone }}
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Payment
+                                </span>
+
+                                <strong>
+                                    {{ order.payment_method }}
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Total
+                                </span>
+
+                                <strong>
+                                    ₹{{ order.total | int }}
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Ordered
+                                </span>
+
+                                <strong>
+                                    {{ order.created_at.strftime(
+                                        "%d %b %Y, %I:%M %p"
+                                    ) }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================
+                             ORDER BODY
+                        =================================== -->
+
+                        <div class="order-content">
+
+
+                            <!-- PRODUCTS -->
+
+                            <section>
+
+                                <h3>
+                                    Products
+                                </h3>
+
+
+                                {% if row["items"] %}
+
+
+                                    {% for item in row["items"] %}
+
+                                        <div class="admin-product">
+
+
+                                            <img
+                                                src="{{ url_for(
+                                                    'static',
+                                                    filename='images/' + item.image
+                                                ) }}"
+                                                alt="{{ item.name }}"
+                                            >
+
+
+                                            <div>
+
+                                                <strong>
+                                                    {{ item.name }}
+                                                </strong>
+
+                                                <span>
+
+                                                    ₹{{ item.price | int }}
+
+                                                    ×
+
+                                                    {{ item.quantity }}
+
+                                                </span>
+
+                                            </div>
+
+
+                                            <strong>
+                                                ₹{{ item.item_total | int }}
+                                            </strong>
+
+                                        </div>
+
+                                    {% endfor %}
+
+
+                                {% else %}
+
+                                    <p class="no-product-data">
+                                        Product information is unavailable.
+                                    </p>
+
+                                {% endif %}
+
+                            </section>
+
+
+                            <!-- DELIVERY -->
+
+                            <section>
+
+                                <h3>
+                                    Delivery Details
+                                </h3>
+
+
+                                <div class="delivery-details">
+
+                                    <p>
+
+                                        <strong>
+                                            {{ order.customer_name }}
+                                        </strong>
+
+                                    </p>
+
+
+                                    <p>
+                                        {{ order.email }}
+                                    </p>
+
+
+                                    <p>
+                                        {{ order.phone }}
+                                    </p>
+
+
+                                    <p>
+                                        {{ order.address }}
+                                    </p>
+
+
+                                    <p>
+
+                                        {{ order.city }},
+
+                                        {{ order.state }}
+
+                                        - {{ order.pincode }}
+
+                                    </p>
+
+                                </div>
+
+                            </section>
+
+                        </div>
+
+
+                        <!-- ==================================
+                             ORDER FOOTER
+                        =================================== -->
+
+                        <div class="order-footer">
+
+
+                            <div class="price-summary">
+
+
+                                <span>
+
+                                    Subtotal:
+
+                                    <strong>
+                                        ₹{{ order.subtotal | int }}
+                                    </strong>
+
+                                </span>
+
+
+                                <span>
+
+                                    Delivery:
+
+                                    <strong>
+
+                                        {% if order.delivery_charge == 0 %}
+
+                                            FREE
+
+                                        {% else %}
+
+                                            ₹{{ order.delivery_charge | int }}
+
+                                        {% endif %}
+
+                                    </strong>
+
+                                </span>
+
+
+                                <span>
+
+                                    Total:
+
+                                    <strong>
+                                        ₹{{ order.total | int }}
+                                    </strong>
+
+                                </span>
+
+                            </div>
+
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'update_order_status',
+                                    order_id=order.id
+                                ) }}"
+                                class="status-form"
+                            >
+
+
+                                <input
+                                    type="hidden"
+                                    name="return_to"
+                                    value="{{ request.full_path }}"
+                                >
+
+
+                                <label
+                                    for="status-{{ order.id }}"
+                                >
+                                    Status
+                                </label>
+
+
+                                <select
+                                    id="status-{{ order.id }}"
+                                    name="status"
+                                    required
+                                >
+
+
+                                    {% for status in [
+                                        "Pending",
+                                        "Confirmed",
+                                        "Shipped",
+                                        "Delivered",
+                                        "Cancelled"
+                                    ] %}
+
+
+                                        <option
+                                            value="{{ status }}"
+
+                                            {% if order.status == status %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ status }}
+                                        </option>
+
+
+                                    {% endfor %}
+
+
+                                </select>
+
+
+                                <button type="submit">
+                                    Update
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </section>
+
+
+        {% else %}
+
+
+            <!-- ==================================================
+                 NO RESULTS
+            =================================================== -->
+
+            <section class="no-orders">
+
+                <div class="no-orders-icon">
+                    ⌕
+                </div>
+
+
+                {% if search_query or status_filter != "All" %}
+
+                    <h2>
+                        No Matching Orders
+                    </h2>
+
+                    <p>
+                        No orders match your current search or status filter.
+                    </p>
+
+                    <a
+                        href="{{ url_for('admin_orders') }}"
+                        class="reset-orders-button"
+                    >
+                        Show All Orders
+                    </a>
+
+
+                {% else %}
+
+                    <h2>
+                        No Orders Yet
+                    </h2>
+
+                    <p>
+                        Customer orders will appear here.
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+        {% endif %}
+
+    </main>
+
+</body>
+
+</html>

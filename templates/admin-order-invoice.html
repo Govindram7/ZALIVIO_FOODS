@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Invoice {{ order.order_number }} | Zalivio Foods
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for(
+            'static',
+            filename='css/admin-invoice.css'
+        ) }}?v=1"
+    >
+
+</head>
+
+
+<body>
+
+    <div class="invoice-page">
+
+
+        <!-- SCREEN-ONLY ACTIONS -->
+
+        <div class="invoice-actions no-print">
+
+            <a
+                href="{{ url_for(
+                    'admin_order_details',
+                    order_id=order.id
+                ) }}"
+                class="invoice-back-button"
+            >
+                ← Back to Order
+            </a>
+
+            <button
+                type="button"
+                class="invoice-print-button"
+                onclick="window.print()"
+            >
+                Print Invoice
+            </button>
+
+        </div>
+
+
+        <!-- PRINTABLE INVOICE -->
+
+        <main class="invoice-sheet">
+
+
+            <header class="invoice-header">
+
+                <div class="invoice-brand">
+
+                    <span class="invoice-eyebrow">
+                        PREMIUM MAKHANA
+                    </span>
+
+                    <h1>
+                        ZALIVIO FOODS
+                    </h1>
+
+                    <p>
+                        Order Invoice
+                    </p>
+
+                </div>
+
+
+                <div class="invoice-heading">
+
+                    <span>
+                        INVOICE
+                    </span>
+
+                    <strong>
+                        {{ order.order_number }}
+                    </strong>
+
+                    <small>
+                        {{ order.created_at.strftime(
+                            "%d %b %Y, %I:%M %p"
+                        ) }}
+                    </small>
+
+                </div>
+
+            </header>
+
+
+            <section class="invoice-meta-grid">
+
+                <div class="invoice-meta-card">
+
+                    <span class="invoice-label">
+                        BILL TO
+                    </span>
+
+                    <strong>
+                        {{ order.customer_name }}
+                    </strong>
+
+                    <p>
+                        {{ order.email }}
+                    </p>
+
+                    <p>
+                        {{ order.phone }}
+                    </p>
+
+                </div>
+
+
+                <div class="invoice-meta-card">
+
+                    <span class="invoice-label">
+                        SHIP TO
+                    </span>
+
+                    <strong>
+                        {{ order.customer_name }}
+                    </strong>
+
+                    <p>
+                        {{ order.address }}
+                    </p>
+
+                    <p>
+                        {{ order.city }},
+                        {{ order.state }}
+                        - {{ order.pincode }}
+                    </p>
+
+                    <p>
+                        Phone: {{ order.phone }}
+                    </p>
+
+                </div>
+
+
+                <div class="invoice-meta-card invoice-order-meta">
+
+                    <span class="invoice-label">
+                        ORDER
+                    </span>
+
+                    <div>
+                        <span>Status</span>
+                        <strong>{{ order.status }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Payment</span>
+                        <strong>{{ order.payment_method }}</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section class="invoice-products">
+
+                <div class="invoice-section-heading">
+
+                    <span class="invoice-label">
+                        ITEMS
+                    </span>
+
+                    <h2>
+                        Ordered Products
+                    </h2>
+
+                </div>
+
+
+                <div class="invoice-table-wrap">
+
+                    <table class="invoice-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>Product</th>
+                                <th class="number-column">Qty</th>
+                                <th class="number-column">Unit Price</th>
+                                <th class="number-column">Amount</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% if items %}
+
+                                {% for item in items %}
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="invoice-product-cell">
+
+                                                {% if item.image %}
+
+                                                    <img
+                                                        src="{{ url_for(
+                                                            'static',
+                                                            filename='images/' + item.image
+                                                        ) }}"
+                                                        alt="{{ item.name }}"
+                                                    >
+
+                                                {% endif %}
+
+                                                <strong>
+                                                    {{ item.name }}
+                                                </strong>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td class="number-column">
+                                            {{ item.quantity }}
+                                        </td>
+
+                                        <td class="number-column">
+                                            ₹{{ "%.2f"|format(item.price) }}
+                                        </td>
+
+                                        <td class="number-column">
+                                            ₹{{ "%.2f"|format(item.item_total) }}
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            {% else %}
+
+                                <tr>
+
+                                    <td
+                                        colspan="4"
+                                        class="invoice-empty-row"
+                                    >
+                                        Product information is unavailable
+                                        for this order.
+                                    </td>
+
+                                </tr>
+
+                            {% endif %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <section class="invoice-totals-section">
+
+                <div class="invoice-thank-you">
+
+                    <span class="invoice-label">
+                        THANK YOU
+                    </span>
+
+                    <h2>
+                        Thank you for choosing Zalivio Foods.
+                    </h2>
+
+                    <p>
+                        We appreciate your order.
+                    </p>
+
+                </div>
+
+
+                <div class="invoice-totals">
+
+                    <div>
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <strong>
+                            ₹{{ "%.2f"|format(order.subtotal) }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Delivery Charge
+                        </span>
+
+                        <strong>
+
+                            {% if order.delivery_charge == 0 %}
+
+                                FREE
+
+                            {% else %}
+
+                                ₹{{ "%.2f"|format(order.delivery_charge) }}
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="invoice-grand-total">
+
+                        <span>
+                            Grand Total
+                        </span>
+
+                        <strong>
+                            ₹{{ "%.2f"|format(order.total) }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <footer class="invoice-footer">
+
+                <p>
+                    Invoice generated from the Zalivio Foods
+                    order management system.
+                </p>
+
+                <p>
+                    Order {{ order.order_number }}
+                </p>
+
+            </footer>
+
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

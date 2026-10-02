@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="ZALIVIO FOODS - Premium roasted makhana for healthy everyday snacking."
+    >
+
+    <title>ZALIVIO FOODS | Premium Makhana</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}?v=6d"
+    >
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     NAVIGATION
+================================================== -->
+
+<header>
+
+    <nav class="navbar">
+
+        <a href="#home" class="logo">
+            ZALIVIO
+            <span>FOODS</span>
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#products">
+                Shop
+            </a>
+
+            <a href="#why-us">
+                Why Us
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+            <a href="#reviews">
+                Reviews
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
+
+        </div>
+
+
+        <!-- NAVIGATION ACTIONS -->
+
+        <div class="nav-actions">
+
+            <a
+                href="{{ url_for('track_order') }}"
+                class="track-order-link"
+            >
+                Track Order
+            </a>
+
+
+            <button
+                type="button"
+                class="cart-button"
+                onclick="openCart()"
+                aria-label="Open shopping cart"
+            >
+
+                Cart
+
+                (<span id="cart-count">0</span>)
+
+            </button>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+
+<!-- ==================================================
+     HERO
+================================================== -->
+
+<main>
+
+<section
+    id="home"
+    class="hero"
+>
+
+    <div class="hero-content">
+
+        <p class="small-title">
+            HEALTHY SNACKING MADE DELICIOUS
+        </p>
+
+
+        <h1>
+
+            Crunchy. Healthy.
+
+            <span>
+                Naturally Delicious.
+            </span>
+
+        </h1>
+
+
+        <p class="hero-description">
+
+            Discover premium makhana made for
+            delicious everyday snacking.
+
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <a
+                href="#products"
+                class="primary-button"
+            >
+
+                Shop Now
+
+            </a>
+
+
+            <a
+                href="#about"
+                class="secondary-button"
+            >
+
+                Discover Our Story
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     PRODUCTS
+================================================== -->
+
+<section
+    id="products"
+    class="section"
+>
+
+    <div class="section-heading">
+
+        <p>
+            OUR COLLECTION
+        </p>
+
+        <h2>
+            Find Your Favourite Flavour
+        </h2>
+
+        <span>
+            Delicious makhana for every mood.
+        </span>
+
+    </div>
+
+
+    <div class="product-grid">
+
+
+       {% for product in products %}
+
+<article class="product-card">
+
+    <div class="product-image">
+
+        <img
+            src="{{ url_for(
+                'static',
+                filename='images/' + product.image
+            ) }}"
+            alt="{{ product.name }}"
+            loading="lazy"
+        >
+
+    </div>
+
+
+    <div class="product-info">
+
+        <h3>
+            {{ product.name }}
+        </h3>
+
+
+        <p class="product-description">
+
+            {% if product.description %}
+
+                {{ product.description }}
+
+            {% else %}
+
+                Premium makhana made for
+                delicious everyday snacking.
+
+            {% endif %}
+
+        </p>
+
+
+        <div class="product-stock">
+
+            {% if product.stock <= 0 %}
+
+                <span class="store-stock out-of-stock">
+                    Out of Stock
+                </span>
+
+            {% elif product.stock <= 10 %}
+
+                <span class="store-stock low-stock">
+                    Only {{ product.stock }} left
+                </span>
+
+            {% else %}
+
+                <span class="store-stock in-stock">
+                    In Stock
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="product-bottom">
+
+            <span class="price">
+                ₹{{ product.price | int }}
+            </span>
+
+
+            {% if product.stock > 0 %}
+
+                <button
+                    type="button"
+                    onclick='addToCart(
+                        {{ product.id }},
+                        {{ product.name | tojson }},
+                        {{ product.price }},
+                        {{ product.image | tojson }}
+                    )'
+                >
+                    Add to Cart
+                </button>
+
+            {% else %}
+
+                <button
+                    type="button"
+                    disabled
+                    class="out-of-stock-button"
+                >
+                    Out of Stock
+                </button>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</article>
+
+{% endfor %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     WHY ZALIVIO
+================================================== -->
+
+<section
+    id="why-us"
+    class="why-section"
+>
+
+    <div class="section-heading">
+
+        <p>
+            WHY ZALIVIO?
+        </p>
+
+        <h2>
+            Better Snacking Starts Here
+        </h2>
+
+        <span>
+            Simple ingredients. Great crunch. Great taste.
+        </span>
+
+    </div>
+
+
+    <div class="features">
+
+
+        <!-- FEATURE 1 -->
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                ✓
+            </div>
+
+            <h3>
+                Premium Quality
+            </h3>
+
+            <p>
+
+                Carefully selected makhana for
+                quality you can trust.
+
+            </p>
+
+        </div>
+
+
+        <!-- FEATURE 2 -->
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                ♡
+            </div>
+
+            <h3>
+                Healthy Choice
+            </h3>
+
+            <p>
+
+                A simple and delicious option
+                for everyday snacking.
+
+            </p>
+
+        </div>
+
+
+        <!-- FEATURE 3 -->
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                ★
+            </div>
+
+            <h3>
+                Great Taste
+            </h3>
+
+            <p>
+
+                Delicious flavours created to
+                make every bite enjoyable.
+
+            </p>
+
+        </div>
+
+
+        <!-- FEATURE 4 -->
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                📦
+            </div>
+
+            <h3>
+                Freshly Packed
+            </h3>
+
+            <p>
+
+                Packed carefully to maintain
+                freshness and crunch.
+
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     ABOUT
+================================================== -->
+
+<section
+    id="about"
+    class="about-section"
+>
+
+    <div class="about-content">
+
+        <p class="small-title">
+            OUR STORY
+        </p>
+
+
+        <h2>
+            Snacks You Can Feel Good About
+        </h2>
+
+
+        <p>
+
+            At ZALIVIO FOODS, we believe snacking
+            should be simple, enjoyable and delicious.
+
+        </p>
+
+
+        <p>
+
+            Our goal is to bring premium makhana
+            to customers who want a better everyday
+            snacking experience.
+
+        </p>
+
+
+        <a
+            href="#products"
+            class="primary-button"
+        >
+
+            Explore Products
+
+        </a>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     REVIEWS
+================================================== -->
+
+<section
+    id="reviews"
+    class="reviews-section"
+>
+
+    <div class="section-heading">
+
+        <p>
+            CUSTOMER LOVE
+        </p>
+
+        <h2>
+            What Our Customers Say
+        </h2>
+
+    </div>
+
+
+    <div class="reviews">
+
+
+        <!-- REVIEW 1 -->
+
+        <article class="review-card">
+
+            <div class="stars">
+                ★★★★★
+            </div>
+
+            <p>
+
+                "Fresh, crunchy and delicious.
+                A great snack to keep at home."
+
+            </p>
+
+            <strong>
+                Happy Customer
+            </strong>
+
+        </article>
+
+
+        <!-- REVIEW 2 -->
+
+        <article class="review-card">
+
+            <div class="stars">
+                ★★★★★
+            </div>
+
+            <p>
+
+                "Loved the crunch and flavour.
+                Looking forward to trying more."
+
+            </p>
+
+            <strong>
+                Happy Customer
+            </strong>
+
+        </article>
+
+
+        <!-- REVIEW 3 -->
+
+        <article class="review-card">
+
+            <div class="stars">
+                ★★★★★
+            </div>
+
+            <p>
+
+                "A simple snack that tastes
+                really good."
+
+            </p>
+
+            <strong>
+                Happy Customer
+            </strong>
+
+        </article>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     CONTACT
+================================================== -->
+
+<section
+    id="contact"
+    class="contact-section"
+>
+
+    <div class="contact-content">
+
+        <p class="small-title">
+            GET IN TOUCH
+        </p>
+
+
+        <h2>
+            We'd Love to Hear From You
+        </h2>
+
+
+        <p>
+
+            Have a question about our products?
+            Send us a message.
+
+        </p>
+
+
+        <form id="contact-form">
+
+
+            <!-- NAME -->
+
+            <input
+                type="text"
+                id="contact-name"
+                name="name"
+                placeholder="Your Name"
+                autocomplete="name"
+                required
+            >
+
+
+            <!-- EMAIL -->
+
+            <input
+                type="email"
+                id="contact-email"
+                name="email"
+                placeholder="Your Email"
+                autocomplete="email"
+                required
+            >
+
+
+            <!-- MESSAGE -->
+
+            <textarea
+                id="contact-message"
+                name="message"
+                placeholder="Your Message"
+                required
+            ></textarea>
+
+
+            <button type="submit">
+
+                Send Message
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+</section>
+
+</main>
+
+
+
+<!-- ==================================================
+     FOOTER
+================================================== -->
+
+<footer>
+
+    <div class="footer-content">
+
+
+        <!-- BRAND -->
+
+        <div>
+
+            <div class="footer-logo">
+                ZALIVIO FOODS
+            </div>
+
+            <p>
+
+                Crunchy. Healthy.
+                Naturally Delicious.
+
+            </p>
+
+        </div>
+
+
+        <!-- QUICK LINKS -->
+
+        <div>
+
+            <h4>
+                Quick Links
+            </h4>
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#products">
+                Shop
+            </a>
+
+            <a href="#why-us">
+                Why Us
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
+
+        </div>
+
+
+        <!-- CUSTOMER CARE -->
+
+        
+<div>
+
+    <h4>
+        Customer Care
+    </h4>
+
+    <a href="{{ url_for('track_order') }}">
+        Track Your Order
+    </a>
+
+    <a href="#">
+        Shipping Policy
+    </a>
+
+    <a href="#">
+        Return & Refund Policy
+    </a>
+
+    <a href="#">
+        Privacy Policy
+    </a>
+
+    <a href="#">
+        Terms & Conditions
+    </a>
+
+</div>
+    <div class="copyright">
+
+        © 2026 ZALIVIO FOODS.
+        All Rights Reserved.
+
+    </div>
+
+</footer>
+
+
+
+<!-- ==================================================
+     FLOATING CONTACT BUTTON
+================================================== -->
+
+<a
+    class="whatsapp"
+    href="#contact"
+    title="Contact ZALIVIO FOODS"
+    aria-label="Contact ZALIVIO FOODS"
+>
+
+    💬
+
+</a>
+
+
+
+<!-- ==================================================
+     CART BACKGROUND OVERLAY
+================================================== -->
+
+<div
+    id="cart-overlay"
+    class="cart-overlay"
+    onclick="closeCart()"
+></div>
+
+
+
+<!-- ==================================================
+     SHOPPING CART DRAWER
+================================================== -->
+
+<aside
+    id="cart-drawer"
+    class="cart-drawer"
+    aria-label="Shopping cart"
+>
+
+
+    <!-- ================= CART HEADER ================= -->
+
+    <div class="cart-header">
+
+
+        <div>
+
+            <p class="cart-small-title">
+                YOUR SHOPPING BAG
+            </p>
+
+            <h2>
+                Your Cart
+            </h2>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="close-cart"
+            onclick="closeCart()"
+            aria-label="Close shopping cart"
+        >
+
+            &times;
+
+        </button>
+
+
+    </div>
+
+
+
+    <!-- ================= CART PRODUCTS ================= -->
+
+    <div
+        id="cart-items"
+        class="cart-items"
+    >
+
+        <!--
+            JavaScript dynamically adds
+            cart products here.
+        -->
+
+    </div>
+
+
+
+    <!-- ================= EMPTY CART ================= -->
+
+    <div
+        id="empty-cart"
+        class="empty-cart"
+    >
+
+
+        <div class="empty-cart-icon">
+
+            🛒
+
+        </div>
+
+
+        <h3>
+
+            Your cart is empty
+
+        </h3>
+
+
+        <p>
+
+            Add some delicious makhana
+            to get started.
+
+        </p>
+
+
+        <button
+            type="button"
+            onclick="continueShopping()"
+        >
+
+            Continue Shopping
+
+        </button>
+
+
+    </div>
+
+
+
+    <!-- ================= CART SUMMARY ================= -->
+
+    <div
+        id="cart-summary"
+        class="cart-summary"
+    >
+
+
+        <!-- SUBTOTAL -->
+
+        <div class="summary-row">
+
+            <span>
+                Subtotal
+            </span>
+
+            <span id="cart-subtotal">
+                ₹0
+            </span>
+
+        </div>
+
+
+
+        <!-- DELIVERY -->
+
+        <div class="summary-row">
+
+            <span>
+                Delivery
+            </span>
+
+            <span id="delivery-charge">
+                ₹0
+            </span>
+
+        </div>
+
+
+
+        <!-- FREE DELIVERY -->
+
+        <div class="free-delivery-message">
+
+            Free delivery on orders of ₹499 or more
+
+        </div>
+
+
+
+        <!-- TOTAL -->
+
+        <div class="summary-row total-row">
+
+            <span>
+                Total
+            </span>
+
+            <span id="cart-total">
+                ₹0
+            </span>
+
+        </div>
+
+
+
+        <!-- CHECKOUT -->
+
+        <button
+            type="button"
+            class="checkout-button"
+            onclick="checkout()"
+        >
+
+            Proceed to Checkout
+
+        </button>
+
+
+
+        <!-- CONTINUE SHOPPING -->
+
+        <button
+            type="button"
+            class="continue-button"
+            onclick="continueShopping()"
+        >
+
+            Continue Shopping
+
+        </button>
+
+
+    </div>
+
+</aside>
+
+
+
+<!-- ==================================================
+     JAVASCRIPT
+================================================== -->
+
+<script
+    src="{{ url_for('static', filename='js/script.js') }}"
+></script>
+
+
+</body>
+
+</html>

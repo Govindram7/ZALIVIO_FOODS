@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ order.order_number }} | Zalivio Admin
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/admin.css') }}?v=7"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ==================================================
+         HEADER
+    =================================================== -->
+
+    <header class="admin-header">
+
+        <div class="admin-header-inner">
+
+            <div class="admin-brand-area">
+
+                <a
+                    href="{{ url_for('admin_orders') }}"
+                    class="admin-logo"
+                >
+                    ZALIVIO FOODS
+                </a>
+
+                <span class="admin-header-label">
+                    ADMIN
+                </span>
+
+            </div>
+
+
+            <div class="admin-header-actions">
+
+                <a href="{{ url_for('admin_orders') }}">
+                    Orders
+                </a>
+
+                <a href="{{ url_for('admin_products') }}">
+                    Products
+                </a>
+
+                <a
+                    href="{{ url_for('home') }}"
+                    target="_blank"
+                >
+                    View Store
+                </a>
+
+                <a
+                    href="{{ url_for('track_order') }}"
+                    target="_blank"
+                >
+                    Track Order
+                </a>
+
+                <a
+                    href="{{ url_for('admin_logout') }}"
+                    class="logout-button"
+                >
+                    Logout
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="admin-container order-details-container">
+
+
+        <!-- ==================================================
+             BACK
+        =================================================== -->
+
+        <div class="order-details-back-row">
+
+            <a
+                href="{{ url_for('admin_orders') }}"
+                class="back-to-orders-button"
+            >
+                ← Back to Orders
+            </a>
+
+            <a
+                href="{{ url_for(
+                    'admin_order_invoice',
+                    order_id=order.id
+                ) }}"
+                class="print-invoice-button"
+                target="_blank"
+                rel="noopener"
+            >
+                Print Invoice
+            </a>
+
+        </div>
+
+
+        <!-- ==================================================
+             FLASH MESSAGES
+        =================================================== -->
+
+        {% with messages =
+            get_flashed_messages(
+                with_categories=true
+            )
+        %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="admin-message {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- ==================================================
+             ORDER HEADING
+        =================================================== -->
+
+        <section class="order-details-hero">
+
+            <div>
+
+                <span class="dashboard-eyebrow">
+                    ORDER DETAILS
+                </span>
+
+                <h1>
+                    {{ order.order_number }}
+                </h1>
+
+                <p>
+                    Placed on
+                    {{ order.created_at.strftime(
+                        "%d %b %Y, %I:%M %p"
+                    ) }}
+                </p>
+
+            </div>
+
+
+            <div class="order-details-hero-status">
+
+                <span
+                    class="status-badge
+                    status-{{ order.status | lower }}"
+                >
+                    {{ order.status }}
+                </span>
+
+                <span class="order-details-payment-pill">
+                    {{ order.payment_method }}
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             STEP 4C — ORDER STATUS TIMELINE
+        =================================================== -->
+
+        {% set status_steps = [
+            "Pending",
+            "Confirmed",
+            "Shipped",
+            "Delivered"
+        ] %}
+
+        {% set status_index = {
+            "Pending": 0,
+            "Confirmed": 1,
+            "Shipped": 2,
+            "Delivered": 3
+        } %}
+
+        <section class="order-progress-card">
+
+            <div class="order-progress-heading">
+
+                <div>
+
+                    <span class="dashboard-eyebrow">
+                        ORDER PROGRESS
+                    </span>
+
+                    <h2>
+                        Status Timeline
+                    </h2>
+
+                </div>
+
+                <span
+                    class="status-badge
+                    status-{{ order.status | lower }}"
+                >
+                    {{ order.status }}
+                </span>
+
+            </div>
+
+
+            {% if order.status == "Cancelled" %}
+
+                <div class="order-progress-cancelled">
+
+                    <div class="order-progress-cancelled-icon">
+                        ×
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Order Cancelled
+                        </strong>
+
+                        <p>
+                            This order is currently cancelled.
+                            Previous status history is not stored,
+                            so no earlier delivery stage is assumed.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                {% set current_index =
+                    status_index.get(order.status, 0)
+                %}
+
+                <div class="order-progress-timeline">
+
+                    {% for step in status_steps %}
+
+                        {% set step_index = loop.index0 %}
+
+                        <div
+                            class="order-progress-step
+                            {% if step_index < current_index %}
+                                completed
+                            {% elif step_index == current_index %}
+                                current
+                            {% endif %}"
+                        >
+
+                            <div class="order-progress-track">
+
+                                {% if not loop.first %}
+
+                                    <span
+                                        class="order-progress-line
+                                        {% if step_index <= current_index %}
+                                            completed
+                                        {% endif %}"
+                                    ></span>
+
+                                {% endif %}
+
+                                <span class="order-progress-dot">
+
+                                    {% if step_index < current_index %}
+                                        ✓
+                                    {% else %}
+                                        {{ loop.index }}
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                            <div class="order-progress-label">
+
+                                <strong>
+                                    {{ step }}
+                                </strong>
+
+                                {% if step_index < current_index %}
+
+                                    <span>
+                                        Completed
+                                    </span>
+
+                                {% elif step_index == current_index %}
+
+                                    <span>
+                                        Current status
+                                    </span>
+
+                                {% else %}
+
+                                    <span>
+                                        Upcoming
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ==================================================
+             MAIN GRID
+        =================================================== -->
+
+        <div class="order-details-grid">
+
+
+            <div class="order-details-main">
+
+
+                <!-- CUSTOMER -->
+
+                <section class="order-details-card">
+
+                    <div class="order-details-card-heading">
+
+                        <span class="small-label">
+                            CUSTOMER
+                        </span>
+
+                        <h2>
+                            Customer Details
+                        </h2>
+
+                    </div>
+
+
+                    <div class="order-details-info-grid">
+
+                        <div>
+
+                            <span>
+                                Name
+                            </span>
+
+                            <strong>
+                                {{ order.customer_name }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Phone
+                            </span>
+
+                            <strong>
+                                {{ order.phone }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="order-details-info-wide">
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong>
+                                {{ order.email }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- DELIVERY -->
+
+                <section class="order-details-card">
+
+                    <div class="order-details-card-heading">
+
+                        <span class="small-label">
+                            DELIVERY
+                        </span>
+
+                        <h2>
+                            Delivery Address
+                        </h2>
+
+                    </div>
+
+
+                    <div class="order-details-address">
+
+                        <strong>
+                            {{ order.customer_name }}
+                        </strong>
+
+                        <p>
+                            {{ order.address }}
+                        </p>
+
+                        <p>
+                            {{ order.city }},
+                            {{ order.state }}
+                            - {{ order.pincode }}
+                        </p>
+
+                        <p>
+                            Phone: {{ order.phone }}
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ITEMS -->
+
+                <section class="order-details-card">
+
+                    <div class="order-details-card-heading">
+
+                        <span class="small-label">
+                            ITEMS
+                        </span>
+
+                        <h2>
+                            Ordered Products
+                        </h2>
+
+                    </div>
+
+
+                    {% if items %}
+
+                        <div class="order-details-items">
+
+                            {% for item in items %}
+
+                                <div class="order-details-item">
+
+                                    <img
+                                        src="{{ url_for(
+                                            'static',
+                                            filename='images/' + item.image
+                                        ) }}"
+                                        alt="{{ item.name }}"
+                                    >
+
+                                    <div class="order-details-item-info">
+
+                                        <strong>
+                                            {{ item.name }}
+                                        </strong>
+
+                                        <span>
+                                            ₹{{ "%.2f"|format(item.price) }}
+                                            ×
+                                            {{ item.quantity }}
+                                        </span>
+
+                                    </div>
+
+                                    <strong class="order-details-item-total">
+                                        ₹{{ "%.2f"|format(item.item_total) }}
+                                    </strong>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <p class="no-product-data">
+                            Product information is unavailable for this order.
+                        </p>
+
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+
+            <!-- ==================================================
+                 SUMMARY SIDEBAR
+            =================================================== -->
+
+            <aside class="order-details-sidebar">
+
+
+                <section class="order-details-card order-summary-card">
+
+                    <div class="order-details-card-heading">
+
+                        <span class="small-label">
+                            PAYMENT
+                        </span>
+
+                        <h2>
+                            Order Summary
+                        </h2>
+
+                    </div>
+
+
+                    <div class="order-summary-lines">
+
+                        <div>
+
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <strong>
+                                ₹{{ "%.2f"|format(order.subtotal) }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Delivery Charge
+                            </span>
+
+                            <strong>
+
+                                {% if order.delivery_charge == 0 %}
+
+                                    FREE
+
+                                {% else %}
+
+                                    ₹{{ "%.2f"|format(order.delivery_charge) }}
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="order-summary-total">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <strong>
+                                ₹{{ "%.2f"|format(order.total) }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="order-summary-meta">
+
+                        <div>
+
+                            <span>
+                                Payment Method
+                            </span>
+
+                            <strong>
+                                {{ order.payment_method }}
+                            </strong>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Current Status
+                            </span>
+
+                            <strong>
+                                {{ order.status }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- STATUS UPDATE -->
+
+                <section class="order-details-card">
+
+                    <div class="order-details-card-heading">
+
+                        <span class="small-label">
+                            MANAGEMENT
+                        </span>
+
+                        <h2>
+                            Update Status
+                        </h2>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'update_order_status',
+                            order_id=order.id
+                        ) }}"
+                        class="order-details-status-form"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="return_to"
+                            value="{{ request.path }}"
+                        >
+
+                        <label for="detail-status-{{ order.id }}">
+                            Order Status
+                        </label>
+
+                        <select
+                            id="detail-status-{{ order.id }}"
+                            name="status"
+                            required
+                        >
+
+                            {% for status in [
+                                "Pending",
+                                "Confirmed",
+                                "Shipped",
+                                "Delivered",
+                                "Cancelled"
+                            ] %}
+
+                                <option
+                                    value="{{ status }}"
+                                    {% if order.status == status %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ status }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <button type="submit">
+                            Update Order Status
+                        </button>
+
+                    </form>
+
+
+                    <p class="order-details-status-note">
+                        Cancelling an order uses your existing inventory
+                        restoration logic. Reopening a cancelled order uses
+                        the existing stock reservation checks.
+                    </p>
+
+                </section>
+
+
+                <!-- STEP 4D - PRIVATE ADMIN ORDER NOTES -->
+                <section class="order-details-card admin-order-notes-card">
+                    <div class="order-details-card-heading">
+                        <span class="small-label">INTERNAL</span>
+                        <h2>Admin Order Notes</h2>
+                    </div>
+                    <form method="POST" action="{{ url_for('update_order_notes', order_id=order.id) }}" class="admin-order-notes-form">
+                        <label for="admin-notes-{{ order.id }}">Private note</label>
+                        <textarea id="admin-notes-{{ order.id }}" name="admin_notes" maxlength="2000" rows="7" placeholder="Add a private note about this order...">{{ order.admin_notes or "" }}</textarea>
+                        <div class="admin-order-notes-meta">
+                            <span>Admin only · Maximum 2000 characters</span>
+                            <span id="admin-notes-count-{{ order.id }}" class="admin-order-notes-count">{{ (order.admin_notes or "")|length }}/2000</span>
+                        </div>
+                        <button type="submit">Save Note</button>
+                    </form>
+                    <p class="admin-order-notes-privacy">This note is private and is not shown on customer order tracking or checkout pages.</p>
+                </section>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const textarea = document.getElementById("admin-notes-{{ order.id }}");
+            const counter = document.getElementById("admin-notes-count-{{ order.id }}");
+            if (!textarea || !counter) return;
+            const updateCounter = function () { counter.textContent = textarea.value.length + "/2000"; };
+            textarea.addEventListener("input", updateCounter);
+            updateCounter();
+        });
+    </script>
+
+</body>
+
+</html>

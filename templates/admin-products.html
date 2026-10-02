@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Products & Inventory | Zalivio Admin
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/admin.css') }}?v=4"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="admin-header">
+
+    <div class="admin-header-inner">
+
+        <div class="admin-brand-area">
+
+            <a
+                href="{{ url_for('admin_orders') }}"
+                class="admin-logo"
+            >
+                ZALIVIO FOODS
+            </a>
+
+            <span class="admin-header-label">
+                ADMIN
+            </span>
+
+        </div>
+
+
+        <div class="admin-header-actions">
+
+            <a href="{{ url_for('admin_orders') }}">
+                Orders
+            </a>
+
+            <a href="{{ url_for('admin_products') }}">
+                Products
+            </a>
+
+            <a
+                href="{{ url_for('home') }}"
+                target="_blank"
+            >
+                View Store
+            </a>
+
+            <a
+                href="{{ url_for('admin_logout') }}"
+                class="logout-button"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="admin-container">
+
+
+    <!-- ================================================
+         HEADING
+    ================================================= -->
+
+    <section class="dashboard-heading">
+
+        <div>
+
+            <span class="dashboard-eyebrow">
+                INVENTORY MANAGEMENT
+            </span>
+
+            <h1>
+                Products & Inventory
+            </h1>
+
+            <p>
+                Manage product prices, stock and availability.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================
+         INVENTORY STATISTICS
+    ================================================= -->
+
+    <section class="inventory-statistics">
+
+        <div class="inventory-stat">
+
+            <span>
+                Products
+            </span>
+
+            <strong>
+                {{ total_products }}
+            </strong>
+
+        </div>
+
+
+        <div class="inventory-stat">
+
+            <span>
+                Active
+            </span>
+
+            <strong>
+                {{ active_products }}
+            </strong>
+
+        </div>
+
+
+        <div class="inventory-stat">
+
+            <span>
+                Total Stock
+            </span>
+
+            <strong>
+                {{ total_stock }}
+            </strong>
+
+        </div>
+
+
+        <div class="inventory-stat">
+
+            <span>
+                Out of Stock
+            </span>
+
+            <strong>
+                {{ out_of_stock }}
+            </strong>
+
+        </div>
+
+
+        <div class="inventory-stat inventory-stat-warning">
+
+            <span>
+                Low Stock
+            </span>
+
+            <strong>
+                {{ low_stock_count }}
+            </strong>
+
+        </div>
+
+
+        <div class="inventory-stat">
+
+            <span>
+                Archived
+            </span>
+
+            <strong>
+                {{ archived_count }}
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================
+         FLASH MESSAGES
+    ================================================= -->
+
+    {% with messages =
+        get_flashed_messages(
+            with_categories=true
+        )
+    %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="admin-message {{ category }}"
+                >
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- ================================================
+         LOW STOCK ALERTS
+    ================================================= -->
+
+    {% if out_of_stock_products or low_stock_products %}
+
+        <section class="inventory-alert-panel">
+
+            <div class="inventory-alert-heading">
+
+                <div>
+                    <span class="small-label">
+                        INVENTORY ATTENTION
+                    </span>
+
+                    <h2>
+                        Stock Alerts
+                    </h2>
+                </div>
+
+                <strong class="inventory-alert-count">
+                    {{ out_of_stock_products|length + low_stock_products|length }}
+                    product{% if (out_of_stock_products|length + low_stock_products|length) != 1 %}s{% endif %}
+                    need attention
+                </strong>
+
+            </div>
+
+            <div class="inventory-alert-list">
+
+                {% for product in out_of_stock_products %}
+
+                    <div class="inventory-alert-row inventory-alert-row-out">
+
+                        <div>
+                            <strong>{{ product.name }}</strong>
+                            <span>Out of stock</span>
+                        </div>
+
+                        <div class="inventory-alert-actions">
+
+                            <span class="inventory-alert-stock">
+                                {{ product.stock }} left
+                            </span>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'adjust_product_stock',
+                                    product_id=product.id
+                                ) }}"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="adjustment"
+                                    value="10"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="inventory-alert-restock-button"
+                                >
+                                    +10 Stock
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+
+                {% for product in low_stock_products %}
+
+                    <div class="inventory-alert-row inventory-alert-row-low">
+
+                        <div>
+                            <strong>{{ product.name }}</strong>
+                            <span>
+                                Low stock — threshold {{ low_stock_threshold }}
+                            </span>
+                        </div>
+
+                        <div class="inventory-alert-actions">
+
+                            <span class="inventory-alert-stock">
+                                {{ product.stock }} left
+                            </span>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'adjust_product_stock',
+                                    product_id=product.id
+                                ) }}"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="adjustment"
+                                    value="10"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="inventory-alert-restock-button"
+                                >
+                                    +10 Stock
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- ================================================
+         ADD PRODUCT
+    ================================================= -->
+
+    <section class="inventory-section">
+
+        <div class="inventory-section-heading">
+
+            <div>
+
+                <span class="small-label">
+                    NEW PRODUCT
+                </span>
+
+                <h2>
+                    Add Product
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('add_product') }}"
+            class="add-product-form"
+            enctype="multipart/form-data"
+        >
+
+            <div class="inventory-field">
+
+                <label>
+                    Product Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Example: Cheese Makhana"
+                    required
+                >
+
+            </div>
+
+
+            <div class="inventory-field">
+
+                <label>
+                    Price ₹
+                </label>
+
+                <input
+                    type="number"
+                    name="price"
+                    min="0"
+                    step="0.01"
+                    placeholder="149"
+                    required
+                >
+
+            </div>
+
+
+            <div class="inventory-field">
+
+                <label>
+                    Stock
+                </label>
+
+                <input
+                    type="number"
+                    name="stock"
+                    min="0"
+                    placeholder="50"
+                    required
+                >
+
+            </div>
+
+
+            <div class="inventory-field">
+
+                <label>
+                    Product Image
+                </label>
+
+                <input
+                    type="file"
+                    name="image"
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                    class="product-image-input"
+                    data-preview-target="new-product-image-preview"
+                    required
+                >
+
+                <small>
+                    JPG, JPEG, PNG or WebP. Maximum 5 MB.
+                </small>
+
+                <img
+                    id="new-product-image-preview"
+                    alt="New product image preview"
+                    style="display:none; max-width:120px; margin-top:10px; border-radius:10px;"
+                >
+
+            </div>
+
+
+            <div class="inventory-field inventory-description-field">
+
+                <label>
+                    Description
+                </label>
+
+                <input
+                    type="text"
+                    name="description"
+                    placeholder="Short product description"
+                >
+
+            </div>
+
+
+            <div class="inventory-add-button">
+
+                <button type="submit">
+                    Add Product
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- ================================================
+         PRODUCTS
+    ================================================= -->
+
+    <section class="inventory-section inventory-catalog-section">
+
+        <div class="inventory-section-heading">
+
+            <div>
+
+                <span class="small-label">
+                    CURRENT CATALOG
+                </span>
+
+                <h2>
+                    Manage Products
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="inventory-products">
+
+
+            {% for product in products %}
+
+
+                <article class="inventory-product-card">
+
+
+                    <div class="inventory-product-preview">
+
+                        <img
+                            src="{{ url_for(
+                                'static',
+                                filename='images/' + product.image
+                            ) }}"
+                            alt="{{ product.name }}"
+                        >
+
+
+                        <div>
+
+                            <h3>
+                                {{ product.name }}
+                            </h3>
+
+                            <div class="inventory-product-price">
+                                ₹{{ "%.2f"|format(product.price) }}
+                            </div>
+
+
+                            {% if product.stock <= 0 %}
+
+                                <span class="inventory-badge out">
+                                    Out of Stock
+                                </span>
+
+                            {% elif product.stock <= 10 %}
+
+                                <span class="inventory-badge low">
+                                    Low Stock
+                                </span>
+
+                            {% else %}
+
+                                <span class="inventory-badge available">
+                                    In Stock
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if product.is_active %}
+
+                                <span class="inventory-badge active">
+                                    Active
+                                </span>
+
+                            {% else %}
+
+                                <span class="inventory-badge inactive">
+                                    Hidden
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'toggle_product_visibility',
+                            product_id=product.id
+                        ) }}"
+                        class="product-visibility-form"
+                    >
+
+                        {% if product.is_active %}
+
+                            <button
+                                type="submit"
+                                class="inventory-visibility-button"
+                                onclick="return confirm('Hide this product from the store?');"
+                            >
+                                Hide Product
+                            </button>
+
+                        {% else %}
+
+                            <button
+                                type="submit"
+                                class="inventory-visibility-button"
+                            >
+                                Show Product
+                            </button>
+
+                        {% endif %}
+
+                    </form>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'archive_product',
+                            product_id=product.id
+                        ) }}"
+                        class="product-archive-form"
+                    >
+
+                        <button
+                            type="submit"
+                            class="inventory-archive-button"
+                            onclick="return confirm('Archive this product? It will be removed from the store and moved to Archived Products.');"
+                        >
+                            Archive Product
+                        </button>
+
+                    </form>
+
+
+                    <div class="quick-stock-panel">
+
+                        <div class="quick-stock-title">
+                            QUICK STOCK
+                        </div>
+
+                        <div class="quick-stock-controls">
+
+                            {% for adjustment in [-10, -1, 1, 10] %}
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'adjust_product_stock',
+                                        product_id=product.id
+                                    ) }}"
+                                    class="quick-stock-form"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="adjustment"
+                                        value="{{ adjustment }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="inventory-stock-button"
+                                    >
+                                        {% if adjustment > 0 %}
+                                            +{{ adjustment }}
+                                        {% else %}
+                                            {{ adjustment }}
+                                        {% endif %}
+                                    </button>
+
+                                </form>
+
+                                {% if adjustment == -1 %}
+
+                                    <strong class="quick-stock-value">
+                                        Stock: {{ product.stock }}
+                                    </strong>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <details
+                        class="product-edit-details"
+                    >
+
+                        <summary
+                            class="inventory-edit-toggle"
+                        >
+                            Edit Product
+                        </summary>
+
+                        <div
+                            class="product-edit-panel"
+                        >
+
+                            <div class="product-edit-heading">
+                                EDIT PRODUCT DETAILS
+                            </div>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'update_product',
+                                    product_id=product.id
+                                ) }}"
+                                class="product-edit-form"
+                                enctype="multipart/form-data"
+                            >
+
+                                <div class="inventory-field">
+
+                                    <label>
+                                        Product Name
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value="{{ product.name }}"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="inventory-field">
+
+                                    <label>
+                                        Price ₹
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        name="price"
+                                        min="0"
+                                        step="0.01"
+                                        value="{{ product.price }}"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="inventory-field">
+
+                                    <label>
+                                        Stock
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        name="stock"
+                                        min="0"
+                                        value="{{ product.stock }}"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="inventory-field">
+
+                                    <label>
+                                        Current / Replace Product Image
+                                    </label>
+
+                                    <img
+                                        id="product-image-preview-{{ product.id }}"
+                                        src="{{ url_for(
+                                            'static',
+                                            filename='images/' + product.image
+                                        ) }}"
+                                        alt="{{ product.name }} image preview"
+                                        class="inventory-edit-image-preview"
+                                    >
+
+                                    <input
+                                        type="file"
+                                        name="image"
+                                        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                        class="product-image-input"
+                                        data-preview-target="product-image-preview-{{ product.id }}"
+                                    >
+
+                                    <small>
+                                        Optional. Leave empty to keep the current image.
+                                    </small>
+
+                                </div>
+
+
+                                <div class="inventory-field product-description-edit">
+
+                                    <label>
+                                        Description
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="description"
+                                        value="{{ product.description }}"
+                                    >
+
+                                </div>
+
+
+                                <div class="inventory-edit-actions">
+
+                                    <button
+                                        type="submit"
+                                        class="inventory-save-button"
+                                    >
+                                        Save Changes
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="inventory-cancel-edit-button"
+                                        onclick="this.closest('details').removeAttribute('open');"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </details>
+
+                </article>
+
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================
+         ARCHIVED PRODUCTS
+    ================================================= -->
+
+    <section class="inventory-section inventory-archive-section">
+
+        <div class="inventory-section-heading">
+
+            <div>
+
+                <span class="small-label">
+                    ARCHIVE
+                </span>
+
+                <h2>
+                    Archived Products
+                </h2>
+
+                <p>
+                    Archived products stay in the database and order history.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if archived_products %}
+
+            <div class="inventory-products">
+
+                {% for product in archived_products %}
+
+                    <article class="inventory-product-card">
+
+                        <div class="inventory-product-preview">
+
+                            <img
+                                src="{{ url_for(
+                                    'static',
+                                    filename='images/' + product.image
+                                ) }}"
+                                alt="{{ product.name }}"
+                            >
+
+                            <div>
+
+                                <h3>
+                                    {{ product.name }}
+                                </h3>
+
+                                <div class="inventory-product-price">
+                                    ₹{{ "%.2f"|format(product.price) }}
+                                </div>
+
+                                <span class="inventory-badge inactive">
+                                    Archived
+                                </span>
+
+                                <div class="archived-stock">
+                                    Stock: {{ product.stock }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'restore_product',
+                                product_id=product.id
+                            ) }}"
+                            class="archived-restore-form"
+                        >
+
+                            <button
+                                type="submit"
+                                class="inventory-visibility-button"
+                            >
+                                Restore Product
+                            </button>
+
+                        </form>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p class="inventory-empty-state">
+                No archived products.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+<script>
+    document.querySelectorAll(".product-image-input").forEach(function (input) {
+        input.addEventListener("change", function () {
+            const file = this.files && this.files[0];
+            const previewId = this.dataset.previewTarget;
+            const preview = document.getElementById(previewId);
+
+            if (!preview) {
+                return;
+            }
+
+            if (!file) {
+                if (previewId === "new-product-image-preview") {
+                    preview.removeAttribute("src");
+                    preview.style.display = "none";
+                }
+                return;
+            }
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+                alert("Please choose a JPG, JPEG, PNG or WebP image.");
+                this.value = "";
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert("Product image must be 5 MB or smaller.");
+                this.value = "";
+                return;
+            }
+
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+        });
+    });
+</script>
+
+</body>
+
+</html>

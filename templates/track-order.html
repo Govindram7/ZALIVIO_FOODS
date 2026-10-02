@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Track Your Order | Zalivio Foods</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/track-order.css') }}?v=6"
+    >
+</head>
+
+<body>
+
+    <header class="tracking-header">
+        <div class="header-inner">
+            <a href="{{ url_for('home') }}" class="logo">ZALIVIO FOODS</a>
+            <a href="{{ url_for('home') }}" class="store-link">Continue Shopping</a>
+        </div>
+    </header>
+
+    <main class="tracking-page">
+
+        <section class="tracking-search">
+
+            <span class="eyebrow">ORDER TRACKING</span>
+
+            <h1>Track Your Order</h1>
+
+            <p class="tracking-intro">
+                Enter your order number and the phone number used while placing your order.
+            </p>
+
+            <form
+                method="POST"
+                action="{{ url_for('track_order') }}"
+                class="tracking-form"
+                autocomplete="off"
+            >
+                <div class="form-group">
+                    <label for="order_number">Order Number</label>
+
+                    <input
+                        type="text"
+                        id="order_number"
+                        name="order_number"
+                        placeholder="Example: ZAL-20260923-ABC123"
+                        value="{{ request.form.get('order_number', '') }}"
+                        maxlength="50"
+                        autocomplete="off"
+                        spellcheck="false"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="10-digit phone number"
+                        value=""
+                        maxlength="15"
+                        inputmode="tel"
+                        autocomplete="off"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="track-button">
+                    Track Order
+                </button>
+            </form>
+
+            <p class="privacy-note">
+                For your privacy, both the order number and phone number are required.
+            </p>
+
+            {% if error %}
+            <div class="tracking-message error" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            {% if success %}
+            <div class="tracking-message success" role="status">
+                {{ success }}
+            </div>
+            {% endif %}
+
+        </section>
+
+        {% if order %}
+
+        <section class="tracking-result">
+
+            <div class="result-header">
+                <div>
+                    <span>ORDER NUMBER</span>
+                    <h2>{{ order.order_number }}</h2>
+                </div>
+
+                <span class="status-badge status-{{ order.status | lower }}">
+                    {{ order.status }}
+                </span>
+            </div>
+
+            <div class="order-status-message status-message-{{ order.status | lower }}" role="status">
+                {% if order.status == "Pending" %}
+                    <strong>We received your order.</strong>
+                    <p>Your order is waiting for confirmation. We will start preparing it once it is confirmed.</p>
+                {% elif order.status == "Confirmed" %}
+                    <strong>Your order has been confirmed.</strong>
+                    <p>We are preparing your order and will update the status when it is shipped.</p>
+                {% elif order.status == "Shipped" %}
+                    <strong>Great news! Your order is on the way.</strong>
+                    <p>Your order has been shipped and is moving toward delivery.</p>
+                {% elif order.status == "Delivered" %}
+                    <strong>Your order has been delivered successfully.</strong>
+                    <p>Thank you for shopping with Zalivio Foods. We hope you enjoy your order.</p>
+                {% elif order.status == "Cancelled" %}
+                    <strong>Your order has been cancelled.</strong>
+                    <p>This order will not be processed for delivery. Please contact Zalivio Foods if you need assistance.</p>
+                {% else %}
+                    <strong>Order status: {{ order.status }}</strong>
+                    <p>Please check again later for the latest update on your order.</p>
+                {% endif %}
+            </div>
+
+            {% if order.status != "Cancelled" %}
+
+            {% set statuses = ["Pending", "Confirmed", "Shipped", "Delivered"] %}
+            {% set current_index = statuses.index(order.status) if order.status in statuses else 0 %}
+
+            <div class="status-tracker">
+
+                {% for status in statuses %}
+                {% set status_index = loop.index0 %}
+
+                <div class="tracking-step {% if status_index <= current_index %}completed{% endif %}">
+
+                    <div class="step-circle">
+                        {% if status_index < current_index %}
+                            ✓
+                        {% else %}
+                            {{ loop.index }}
+                        {% endif %}
+                    </div>
+
+                    <span>{{ status }}</span>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+            <div class="order-information">
+
+                <section class="information-card">
+                    <h3>Order Details</h3>
+
+                    <div class="detail-row">
+                        <span>Order Date</span>
+                        <strong>
+                            {{ order.created_at.strftime("%d %b %Y, %I:%M %p") if order.created_at else "—" }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Payment</span>
+                        <strong>
+                            {% if order.payment_method == "COD" %}
+                                Cash on Delivery
+                            {% else %}
+                                {{ order.payment_method }}
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Current Status</span>
+                        <strong>{{ order.status }}</strong>
+                    </div>
+                </section>
+
+                <section class="information-card">
+                    <h3>Delivery Details</h3>
+
+                    <p class="customer-name">
+                        {{ order.customer_name }}
+                    </p>
+
+                    <p>
+                        Phone: {{ masked_phone }}
+                    </p>
+
+                    <p>
+                        {{ order.address }}
+                    </p>
+
+                    <p>
+                        {{ order.city }}, {{ order.state }} - {{ order.pincode }}
+                    </p>
+                </section>
+
+            </div>
+
+            <div class="products-section">
+
+                <h3>Your Items</h3>
+
+                {% for item in order_items %}
+
+                <div class="tracking-product">
+
+                    {% if item.image %}
+                    <img
+                        src="{{ url_for('static', filename='images/' + item.image) }}"
+                        alt="{{ item.name }}"
+                    >
+                    {% else %}
+                    <div class="product-image-placeholder">Z</div>
+                    {% endif %}
+
+                    <div class="product-details">
+                        <strong>{{ item.name }}</strong>
+                        <span>
+                            ₹{{ item.price | int }} × {{ item.quantity }}
+                        </span>
+                    </div>
+
+                    <strong class="product-total">
+                        ₹{{ item.item_total | int }}
+                    </strong>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="tracking-totals">
+
+                <div>
+                    <span>Subtotal</span>
+                    <strong>₹{{ order.subtotal | int }}</strong>
+                </div>
+
+                <div>
+                    <span>Delivery</span>
+                    <strong>
+                        {% if order.delivery_charge == 0 %}
+                            FREE
+                        {% else %}
+                            ₹{{ order.delivery_charge | int }}
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="grand-total">
+                    <span>Total</span>
+                    <strong>₹{{ order.total | int }}</strong>
+                </div>
+
+            </div>
+
+            {% if order.status == "Pending" and cancellation_token %}
+
+            <div class="customer-cancel-section">
+
+                <div class="customer-cancel-copy">
+                    <h3>Need to cancel this order?</h3>
+                    <p>
+                        You can cancel your order while its status is still Pending.
+                        Once processing starts, online cancellation will no longer be available.
+                    </p>
+                </div>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('customer_cancel_order') }}"
+                    onsubmit="return confirm('Are you sure you want to cancel this order? This action cannot be undone.');"
+                >
+                    <input
+                        type="hidden"
+                        name="order_number"
+                        value="{{ order.order_number }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="cancellation_token"
+                        value="{{ cancellation_token }}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="cancel-order-button"
+                    >
+                        Cancel Order
+                    </button>
+                </form>
+
+            </div>
+
+            {% elif order.status == "Confirmed" %}
+
+            <div class="customer-help-section confirmed-help">
+                <div class="customer-cancel-copy">
+                    <h3>Online cancellation is no longer available</h3>
+                    <p>
+                        Your order is already being prepared.
+                        Please contact Zalivio Foods if you need help with this order.
+                    </p>
+                </div>
+            </div>
+
+            {% elif order.status == "Shipped" %}
+
+            <div class="customer-help-section shipped-help">
+                <div class="customer-cancel-copy">
+                    <h3>Your order has already been shipped</h3>
+                    <p>
+                        Online cancellation is no longer available because your order is on the way.
+                        Please contact Zalivio Foods if you need assistance.
+                    </p>
+                </div>
+            </div>
+
+            {% elif order.status == "Delivered" %}
+
+            <div class="customer-help-section delivered-help">
+                <div class="customer-cancel-copy">
+                    <h3>Order completed</h3>
+                    <p>
+                        This order has already been delivered.
+                        Thank you for shopping with Zalivio Foods.
+                    </p>
+                </div>
+            </div>
+
+            {% endif %}
+
+            <div class="tracking-actions">
+
+                <a
+                    href="{{ url_for('track_order') }}"
+                    class="track-another-button"
+                >
+                    Track Another Order
+                </a>
+
+                <a
+                    href="{{ url_for('home') }}"
+                    class="shop-button"
+                >
+                    Continue Shopping
+                </a>
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+    </main>
+
+    <footer class="tracking-footer">
+        <p>© 2026 Zalivio Foods. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

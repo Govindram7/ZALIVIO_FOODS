@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Order Confirmed | Zalivio Foods</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/checkout.css') }}?v=6"
+    >
+
+    <style>
+        .success-page {
+            min-height: calc(100vh - 150px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .success-card {
+            width: 100%;
+            max-width: 720px;
+            background: #ffffff;
+            border: 1px solid #e7e1d4;
+            border-radius: 20px;
+            padding: 45px;
+            box-shadow: 0 12px 40px rgba(23, 63, 50, 0.08);
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #173f32;
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .success-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .success-heading span {
+            display: block;
+            margin-bottom: 8px;
+            color: #9b7c2f;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .success-heading h1 {
+            margin-bottom: 10px;
+            color: #173f32;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 38px;
+        }
+
+        .success-heading p {
+            color: #6d7b74;
+        }
+
+        .order-number-box {
+            background: #f4f1e7;
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .order-number-box span {
+            display: block;
+            margin-bottom: 4px;
+            color: #718078;
+            font-size: 12px;
+        }
+
+        .order-number-box strong {
+            color: #173f32;
+            font-size: 18px;
+        }
+
+        .tracking-help {
+            margin-top: -14px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #718078;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .success-section {
+            margin-top: 28px;
+        }
+
+        .success-section h2 {
+            margin-bottom: 15px;
+            color: #173f32;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 21px;
+        }
+
+        .customer-details {
+            background: #faf9f5;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .customer-details p {
+            margin-bottom: 7px;
+            color: #5f6e67;
+            font-size: 14px;
+        }
+
+        .customer-details p:last-child {
+            margin-bottom: 0;
+        }
+
+        .success-item {
+            display: grid;
+            grid-template-columns: 60px 1fr auto;
+            gap: 14px;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #ece8df;
+        }
+
+        .success-item img,
+        .success-item-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 9px;
+        }
+
+        .success-item img {
+            object-fit: cover;
+        }
+
+        .success-item-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f4f1e7;
+            color: #173f32;
+            font-weight: 800;
+        }
+
+        .success-item h3 {
+            color: #173f32;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .success-item p {
+            color: #718078;
+            font-size: 12px;
+        }
+
+        .success-item strong {
+            color: #173f32;
+        }
+
+        .success-totals {
+            margin-top: 22px;
+        }
+
+        .success-total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #65736c;
+        }
+
+        .success-total-row.final {
+            border-top: 1px solid #ddd8cc;
+            margin-top: 15px;
+            padding-top: 15px;
+            color: #173f32;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .success-actions {
+            margin-top: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .track-button,
+        .home-button {
+            min-width: 180px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 24px;
+            border-radius: 9px;
+            font-weight: 700;
+            text-decoration: none;
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .track-button {
+            background: #173f32;
+            color: #ffffff;
+            border: 1px solid #173f32;
+        }
+
+        .track-button:hover {
+            background: #0f3026;
+            transform: translateY(-1px);
+        }
+
+        .home-button {
+            background: #ffffff;
+            color: #173f32;
+            border: 1px solid #173f32;
+        }
+
+        .home-button:hover {
+            background: #f4f1e7;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 600px) {
+            .success-card {
+                padding: 30px 20px;
+            }
+
+            .success-heading h1 {
+                font-size: 30px;
+            }
+
+            .success-item {
+                grid-template-columns: 52px 1fr;
+            }
+
+            .success-item img,
+            .success-item-placeholder {
+                width: 52px;
+                height: 52px;
+            }
+
+            .success-item > strong {
+                grid-column: 2;
+            }
+
+            .success-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .track-button,
+            .home-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="checkout-header">
+
+        <div class="header-container">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="logo"
+            >
+                ZALIVIO FOODS
+            </a>
+
+            <a
+                href="{{ url_for('track_order') }}"
+                class="back-link"
+            >
+                Track Order
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <main class="success-page">
+
+        <section class="success-card">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+
+            <div class="success-heading">
+
+                <span>ORDER CONFIRMED</span>
+
+                <h1>Thank You for Your Order!</h1>
+
+                <p>
+                    Your order has been successfully placed.
+                    We will prepare it for delivery.
+                </p>
+
+            </div>
+
+
+            <div class="order-number-box">
+
+                <span>Your Order Number</span>
+
+                <strong>
+                    {{ order.order_number }}
+                </strong>
+
+            </div>
+
+            <p class="tracking-help">
+                Save your order number. You can use it with your phone number to check your order status.
+            </p>
+
+
+            <div class="success-section">
+
+                <h2>Delivery Details</h2>
+
+                <div class="customer-details">
+
+                    <p>
+                        <strong>Name:</strong>
+                        {{ order.customer_name }}
+                    </p>
+
+                    <p>
+                        <strong>Phone:</strong>
+                        {{ order.phone }}
+                    </p>
+
+                    <p>
+                        <strong>Email:</strong>
+                        {{ order.email }}
+                    </p>
+
+                    <p>
+                        <strong>Address:</strong>
+                        {{ order.address }},
+                        {{ order.city }},
+                        {{ order.state }}
+                        - {{ order.pincode }}
+                    </p>
+
+                    <p>
+                        <strong>Payment:</strong>
+                        Cash on Delivery
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="success-section">
+
+                <h2>Order Summary</h2>
+
+                {% for item in order_items %}
+
+                <div class="success-item">
+
+                    {% if item.image %}
+                    <img
+                        src="{{ url_for('static', filename='images/' + item.image) }}"
+                        alt="{{ item.name }}"
+                    >
+                    {% else %}
+                    <div class="success-item-placeholder">Z</div>
+                    {% endif %}
+
+                    <div>
+
+                        <h3>
+                            {{ item.name }}
+                        </h3>
+
+                        <p>
+                            ₹{{ item.price | int }}
+                            ×
+                            {{ item.quantity }}
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        ₹{{ item.item_total | int }}
+                    </strong>
+
+                </div>
+
+                {% endfor %}
+
+
+                <div class="success-totals">
+
+                    <div class="success-total-row">
+
+                        <span>Subtotal</span>
+
+                        <strong>
+                            ₹{{ order.subtotal | int }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="success-total-row">
+
+                        <span>Delivery</span>
+
+                        <strong>
+                            {% if order.delivery_charge == 0 %}
+                                FREE
+                            {% else %}
+                                ₹{{ order.delivery_charge | int }}
+                            {% endif %}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="success-total-row final">
+
+                        <span>Total</span>
+
+                        <strong>
+                            ₹{{ order.total | int }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="success-actions">
+
+                <a
+                    href="{{ url_for('track_order') }}"
+                    class="track-button"
+                >
+                    Track Your Order
+                </a>
+
+                <a
+                    href="{{ url_for('home') }}"
+                    class="home-button"
+                >
+                    Continue Shopping
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="checkout-footer">
+
+        <p>
+            © 2026 Zalivio Foods. All rights reserved.
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

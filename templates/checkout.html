@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Checkout | Zalivio Foods</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/checkout.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="checkout-header">
+
+        <div class="header-container">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="logo"
+            >
+                ZALIVIO FOODS
+            </a>
+
+            <a
+                href="{{ url_for('home') }}#products"
+                class="back-link"
+            >
+                ← Continue Shopping
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= CHECKOUT ================= -->
+
+    <main class="checkout-page">
+
+        <div class="checkout-title">
+
+            <span>SECURE CHECKOUT</span>
+
+            <h1>
+                Complete Your Order
+            </h1>
+
+            <p>
+                Enter your delivery details and review your order.
+            </p>
+
+        </div>
+
+
+        <!-- ================= EMPTY CART ================= -->
+
+        <div
+            id="empty-checkout"
+            class="empty-checkout"
+        >
+
+            <h2>Your cart is empty</h2>
+
+            <p>
+                Add some delicious makhana before checking out.
+            </p>
+
+            <a
+                href="{{ url_for('home') }}#products"
+                class="continue-button"
+            >
+                Continue Shopping
+            </a>
+
+        </div>
+
+
+        <!-- ================= CHECKOUT CONTENT ================= -->
+
+        <div
+            id="checkout-content"
+            class="checkout-layout"
+        >
+
+
+            <!-- ============= CUSTOMER FORM ============= -->
+
+            <section class="checkout-form-section">
+
+                <div class="section-heading">
+
+                    <span class="step-number">
+                        1
+                    </span>
+
+                    <div>
+
+                        <h2>
+                            Delivery Details
+                        </h2>
+
+                        <p>
+                            Where should we deliver your order?
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="checkout-form">
+
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+                        <label for="customer_name">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="customer_name"
+                            name="customer_name"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL + PHONE -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="email">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="you@example.com"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="phone">
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="10-digit mobile number"
+                                autocomplete="tel"
+                                inputmode="numeric"
+                                pattern="[0-9]{10}"
+                                maxlength="10"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ADDRESS -->
+
+                    <div class="form-group">
+
+                        <label for="address">
+                            Delivery Address
+                        </label>
+
+                        <textarea
+                            id="address"
+                            name="address"
+                            rows="4"
+                            placeholder="House number, street, area, landmark"
+                            autocomplete="street-address"
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- CITY + STATE -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="city">
+                                City
+                            </label>
+
+                            <input
+                                type="text"
+                                id="city"
+                                name="city"
+                                placeholder="City"
+                                autocomplete="address-level2"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="state">
+                                State
+                            </label>
+
+                            <input
+                                type="text"
+                                id="state"
+                                name="state"
+                                placeholder="State"
+                                autocomplete="address-level1"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PIN CODE -->
+
+                    <div class="form-group">
+
+                        <label for="pincode">
+                            PIN Code
+                        </label>
+
+                        <input
+                            type="text"
+                            id="pincode"
+                            name="pincode"
+                            placeholder="6-digit PIN code"
+                            autocomplete="postal-code"
+                            inputmode="numeric"
+                            pattern="[0-9]{6}"
+                            maxlength="6"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- ============= PAYMENT ============= -->
+
+                    <div class="payment-section">
+
+                        <div class="section-heading">
+
+                            <span class="step-number">
+                                2
+                            </span>
+
+                            <div>
+
+                                <h2>
+                                    Payment Method
+                                </h2>
+
+                                <p>
+                                    Cash on Delivery is currently available.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <label class="payment-option">
+
+                            <input
+                                type="radio"
+                                name="payment_method"
+                                value="COD"
+                                checked
+                            >
+
+                            <div>
+
+                                <strong>
+                                    Cash on Delivery
+                                </strong>
+
+                                <span>
+                                    Pay when your order arrives.
+                                </span>
+
+                            </div>
+
+                        </label>
+
+                        
+
+                    </div>
+
+
+                    <!-- MESSAGE -->
+
+                    <div
+                        id="checkout-message"
+                        class="checkout-message"
+                    ></div>
+
+
+                    <!-- PLACE ORDER -->
+
+                    <button
+                        type="submit"
+                        id="place-order-button"
+                        class="place-order-button"
+                    >
+                        Place Order
+                    </button>
+
+
+                </form>
+
+            </section>
+
+
+            <!-- ============= ORDER SUMMARY ============= -->
+
+            <aside class="order-summary">
+
+                <div class="section-heading">
+
+                    <span class="step-number">
+                        3
+                    </span>
+
+                    <div>
+
+                        <h2>
+                            Order Summary
+                        </h2>
+
+                        <p>
+                            Review your items before ordering.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRODUCTS -->
+
+                <div id="checkout-items"></div>
+
+
+                <!-- TOTALS -->
+
+                <div class="summary-totals">
+
+                    <div class="summary-row">
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <strong id="checkout-subtotal">
+                            ₹0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Delivery
+                        </span>
+
+                        <strong id="checkout-delivery">
+                            ₹0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-row total-row">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong id="checkout-total">
+                            ₹0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="secure-note">
+
+                    <strong>
+                        Secure Checkout
+                    </strong>
+
+                    <p>
+                        Your order information is securely processed.
+                    </p>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="checkout-footer">
+
+        <p>
+            © 2026 Zalivio Foods. All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script
+        src="{{ url_for('static', filename='js/checkout.js') }}?v=6"
+    ></script>
+
+</body>
+
+</html>

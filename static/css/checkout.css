@@ -1,0 +1,653 @@
+/* =========================================================
+   ZALIVIO FOODS - CHECKOUT PAGE
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f7f5ee;
+    color: #173f32;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.checkout-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e6e1d6;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    width: min(1180px, 92%);
+    min-height: 76px;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.logo {
+    color: #173f32;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.back-link {
+    color: #173f32;
+    font-size: 14px;
+    font-weight: 700;
+    transition: opacity 0.2s ease;
+}
+
+.back-link:hover {
+    opacity: 0.7;
+}
+
+
+/* =========================================================
+   MAIN PAGE
+========================================================= */
+
+.checkout-page {
+    width: min(1180px, 92%);
+    margin: 0 auto;
+    padding: 55px 0 70px;
+}
+
+
+/* =========================================================
+   PAGE TITLE
+========================================================= */
+
+.checkout-title {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 45px;
+}
+
+.checkout-title > span {
+    display: inline-block;
+    margin-bottom: 8px;
+
+    color: #9b7c2f;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.checkout-title h1 {
+    margin-bottom: 10px;
+
+    color: #173f32;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.15;
+}
+
+.checkout-title p {
+    color: #65736c;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   CHECKOUT GRID
+========================================================= */
+
+.checkout-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.8fr);
+    gap: 32px;
+    align-items: start;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.checkout-form-section,
+.order-summary {
+    background: #ffffff;
+    border: 1px solid #e7e1d4;
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(23, 63, 50, 0.07);
+}
+
+.checkout-form-section {
+    padding: 34px;
+}
+
+.order-summary {
+    padding: 30px;
+    position: sticky;
+    top: 100px;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
+
+.section-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.step-number {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #173f32;
+    color: #ffffff;
+
+    border-radius: 50%;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.section-heading h2 {
+    color: #173f32;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 24px;
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.section-heading p {
+    color: #718078;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+
+    color: #24483d;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+
+    border: 1px solid #d7d9d3;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #1f332d;
+
+    padding: 13px 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 105px;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #a0aaa5;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #173f32;
+    box-shadow: 0 0 0 3px rgba(23, 63, 50, 0.08);
+}
+
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+.payment-section {
+    margin-top: 12px;
+    padding-top: 28px;
+    border-top: 1px solid #ece8df;
+}
+
+.payment-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+
+    padding: 18px;
+
+    background: #f8f6ef;
+    border: 1px solid #ded8c8;
+    border-radius: 11px;
+
+    cursor: pointer;
+}
+
+.payment-option input {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+
+    accent-color: #173f32;
+}
+
+.payment-option div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.payment-option strong {
+    color: #173f32;
+    font-size: 14px;
+}
+
+.payment-option span {
+    color: #6d7b74;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   CHECKOUT MESSAGE
+========================================================= */
+
+.checkout-message {
+    display: none;
+    margin-top: 18px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.checkout-message.error {
+    display: block;
+    background: #fff0f0;
+    border: 1px solid #e9b5b5;
+    color: #9d2929;
+}
+
+.checkout-message.success {
+    display: block;
+    background: #edf8f1;
+    border: 1px solid #b8ddc4;
+    color: #25623c;
+}
+
+
+/* =========================================================
+   PLACE ORDER BUTTON
+========================================================= */
+
+.place-order-button {
+    width: 100%;
+
+    margin-top: 22px;
+    padding: 16px 20px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #173f32;
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.place-order-button:hover {
+    background: #0f3026;
+    transform: translateY(-1px);
+}
+
+.place-order-button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =========================================================
+   ORDER SUMMARY ITEMS
+========================================================= */
+
+#checkout-items {
+    margin-top: 5px;
+}
+
+.checkout-item {
+    display: grid;
+    grid-template-columns: 68px minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+
+    padding: 17px 0;
+
+    border-bottom: 1px solid #ece8df;
+}
+
+.checkout-item img {
+    width: 68px;
+    height: 68px;
+
+    display: block;
+
+    border-radius: 10px;
+
+    object-fit: cover;
+
+    background: #f2efe7;
+}
+
+.checkout-item h3 {
+    margin: 0 0 5px;
+
+    color: #173f32;
+
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.checkout-item p {
+    margin: 0;
+
+    color: #78847e;
+    font-size: 12px;
+}
+
+.checkout-item-price {
+    color: #173f32;
+    font-size: 14px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SUMMARY TOTALS
+========================================================= */
+
+.summary-totals {
+    padding-top: 20px;
+}
+
+.summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-bottom: 13px;
+
+    color: #65736c;
+    font-size: 14px;
+}
+
+.summary-row strong {
+    color: #173f32;
+}
+
+.total-row {
+    margin-top: 18px;
+    padding-top: 18px;
+
+    border-top: 1px solid #dcd7cc;
+
+    color: #173f32;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.total-row strong {
+    font-size: 21px;
+}
+
+
+/* =========================================================
+   SECURE NOTE
+========================================================= */
+
+.secure-note {
+    margin-top: 24px;
+    padding: 15px;
+
+    background: #f4f1e7;
+
+    border-radius: 9px;
+
+    text-align: center;
+}
+
+.secure-note strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #173f32;
+
+    font-size: 13px;
+}
+
+.secure-note p {
+    color: #748078;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   EMPTY CHECKOUT
+========================================================= */
+
+.empty-checkout {
+    display: none;
+
+    max-width: 600px;
+
+    margin: 20px auto 50px;
+    padding: 55px 30px;
+
+    background: #ffffff;
+
+    border: 1px solid #e7e1d4;
+    border-radius: 18px;
+
+    box-shadow: 0 10px 35px rgba(23, 63, 50, 0.07);
+
+    text-align: center;
+}
+
+.empty-checkout.active {
+    display: block;
+}
+
+.empty-checkout h2 {
+    margin-bottom: 8px;
+
+    color: #173f32;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: 30px;
+}
+
+.empty-checkout p {
+    margin-bottom: 24px;
+
+    color: #718078;
+}
+
+.continue-button {
+    display: inline-block;
+
+    padding: 13px 22px;
+
+    background: #173f32;
+    color: #ffffff;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.continue-button:hover {
+    background: #0f3026;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.checkout-footer {
+    padding: 25px 20px;
+
+    background: #173f32;
+    color: rgba(255, 255, 255, 0.8);
+
+    text-align: center;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .checkout-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .order-summary {
+        position: static;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .header-container {
+        min-height: 65px;
+    }
+
+    .logo {
+        font-size: 17px;
+    }
+
+    .back-link {
+        font-size: 12px;
+    }
+
+    .checkout-page {
+        width: 94%;
+        padding: 35px 0 50px;
+    }
+
+    .checkout-title {
+        margin-bottom: 30px;
+    }
+
+    .checkout-title h1 {
+        font-size: 34px;
+    }
+
+    .checkout-form-section,
+    .order-summary {
+        padding: 22px 18px;
+        border-radius: 13px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .section-heading h2 {
+        font-size: 21px;
+    }
+
+    .checkout-item {
+        grid-template-columns: 58px minmax(0, 1fr);
+    }
+
+    .checkout-item img {
+        width: 58px;
+        height: 58px;
+    }
+
+    .checkout-item-price {
+        grid-column: 2;
+    }
+}
